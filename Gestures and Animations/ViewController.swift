@@ -25,6 +25,17 @@ class ViewController: UIViewController {
         circle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         
         circle.layer.cornerRadius = 75
+        
+        addTapGesture()
+    }
+    
+    func addTapGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
+        circle.addGestureRecognizer(tap)
+    }
+    
+    @objc func handleTapGesture(gesture: UITapGestureRecognizer) {
+        print("Taped")
     }
 
 
