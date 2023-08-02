@@ -27,6 +27,7 @@ class ViewController: UIViewController {
         circle.layer.cornerRadius = 75
         
         addTapGesture()
+        addLongPressGesture()
     }
     
     func addTapGesture() {
@@ -46,7 +47,18 @@ class ViewController: UIViewController {
             }
         }
     }
-
+    
+    func addLongPressGesture() {
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+        circle.addGestureRecognizer(longPress)
+    }
+    
+    @objc func handleLongPressGesture(gesture: UILongPressGestureRecognizer) {
+        let transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
+            self.circle.transform = transform
+        }
+    }
 
 }
 
