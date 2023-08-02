@@ -50,14 +50,26 @@ class ViewController: UIViewController {
     
     func addLongPressGesture() {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
+        longPress.minimumPressDuration = 0.5
         circle.addGestureRecognizer(longPress)
     }
     
     @objc func handleLongPressGesture(gesture: UILongPressGestureRecognizer) {
         let transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
-        UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
-            self.circle.transform = transform
+        
+        switch gesture.state {
+        case .began, .changed:
+            UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
+                self.circle.transform = transform
+            }
+        case .ended:
+            UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
+                self.circle.transform = .identity
+            }
+        default:
+            print("default")
         }
+        
     }
 
 }
