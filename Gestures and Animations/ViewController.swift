@@ -35,7 +35,12 @@ class ViewController: UIViewController {
     }
     
     @objc func handleTapGesture(gesture: UITapGestureRecognizer) {
-        print("Taped")
+        if circle.transform == .identity {
+            let transform = CGAffineTransform(translationX: .zero, y: 400)
+            circle.transform = transform
+        } else {
+            circle.transform = .identity
+        }
     }
 
 
