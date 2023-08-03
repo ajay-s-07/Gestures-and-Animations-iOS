@@ -8,7 +8,9 @@
 import UIKit
 
 class ViewController: UIViewController {
-
+    
+    var differenceX: CGFloat = .zero
+    var differenceY: CGFloat = .zero
     
     let circle = UIView()
     
@@ -28,6 +30,7 @@ class ViewController: UIViewController {
         
         addTapGesture()
         addLongPressGesture()
+//        addPanGesture()
     }
     
     func addTapGesture() {
@@ -37,10 +40,11 @@ class ViewController: UIViewController {
     
     @objc func handleTapGesture(gesture: UITapGestureRecognizer) {
         if circle.transform == .identity {
-            let transform = CGAffineTransform(translationX: .zero, y: 400)
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [.curveEaseOut]) {
-                self.circle.transform = transform
-            }
+//            let transform = CGAffineTransform(translationX: .zero, y: 400)
+//            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [.curveEaseOut]) {
+//                self.circle.transform = transform
+//            }
+            print("")
         } else {
             UIView.animate(withDuration: 0.36) {
                 self.circle.transform = .identity
@@ -50,18 +54,31 @@ class ViewController: UIViewController {
     
     func addLongPressGesture() {
         let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPressGesture))
-        longPress.minimumPressDuration = 0.5
+        longPress.minimumPressDuration = 0.2
         circle.addGestureRecognizer(longPress)
     }
     
     @objc func handleLongPressGesture(gesture: UILongPressGestureRecognizer) {
-        let transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        
+        let location = gesture.location(in: self.view)
+        let location1 = gesture.location(in: gesture.view)
+        
+        let scale = CGAffineTransform(scaleX: 1.25, y: 1.25)
         
         switch gesture.state {
-        case .began, .changed:
+        case .began:
             UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
-                self.circle.transform = transform
+                self.circle.transform = scale
             }
+            differenceX = 75 - location1.x
+            differenceY = 75 - location1.y
+        case .changed:
+            let x = (location.x - circle.center.x) + differenceX
+            let y = (location.y - circle.center.y) + differenceY
+            let translation = CGAffineTransform(translationX: x, y: y)
+            let transform = scale.concatenating(translation)
+            
+            self.circle.transform = transform
         case .ended:
             UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
                 self.circle.transform = .identity
@@ -70,6 +87,29 @@ class ViewController: UIViewController {
             print("default")
         }
         
+    }
+    
+    func addPanGesture() {
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture))
+        circle.addGestureRecognizer(panGesture)
+    }
+
+    @objc func handlePanGesture(gesture: UIPanGestureRecognizer) {
+
+        let translation = gesture.translation(in: gesture.view!)
+
+        switch gesture.state {
+        case .began, .changed:
+            let transform = CGAffineTransform(translationX: translation.x, y:  translation.y)
+            circle.transform = transform
+        case .ended:
+//            UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
+//                self.circle.transform = .identity
+//            }
+            print("")
+        default:
+            print("Pan Gesture")
+        }
     }
 
 }
