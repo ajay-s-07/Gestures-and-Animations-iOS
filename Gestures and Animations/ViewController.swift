@@ -38,7 +38,7 @@ class ViewController: UIViewController {
     @objc func handleTapGesture(gesture: UITapGestureRecognizer) {
         if circle.transform == .identity {
             let transform = CGAffineTransform(translationX: .zero, y: 400)
-            UIView.animate(withDuration: 0.36, delay: 0, options: .curveEaseOut) {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [.curveEaseOut]) {
                 self.circle.transform = transform
             }
         } else {
