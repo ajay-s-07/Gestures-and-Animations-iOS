@@ -13,24 +13,75 @@ class ViewController: UIViewController {
     var differenceY: CGFloat = .zero
     
     let circle = UIView()
+    let anotherCircle = UIView()
+//    let heart = UIImageView()
+//    let heart2 = UIImageView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
-        view.addSubview(circle)
-        circle.backgroundColor = .systemGreen
         
+//        heart.image = UIImage(systemName: "heart.fill")
+//        heart.tintColor = .systemPink
+//        circle.addSubview(heart)
+//
+//
+//        heart.translatesAutoresizingMaskIntoConstraints = false
+//        heart.heightAnchor.constraint(equalToConstant: 150).isActive = true
+//        heart.widthAnchor.constraint(equalToConstant: 150).isActive = true
+//        heart.centerXAnchor.constraint(equalTo: circle.centerXAnchor).isActive = true
+//        heart.centerYAnchor.constraint(equalTo: circle.centerYAnchor).isActive = true
+//
+//        heart2.image = UIImage(systemName: "heart.fill")
+//        heart2.tintColor = .systemPink
+//
+//        anotherCircle.addSubview(heart2)
+//        heart2.translatesAutoresizingMaskIntoConstraints = false
+//        heart2.heightAnchor.constraint(equalToConstant: 150).isActive = true
+//        heart2.widthAnchor.constraint(equalToConstant: 150).isActive = true
+//        heart2.centerXAnchor.constraint(equalTo: anotherCircle.centerXAnchor).isActive = true
+//        heart2.centerYAnchor.constraint(equalTo: anotherCircle.centerYAnchor).isActive = true
+        
+        view.addSubview(anotherCircle)
+
+        anotherCircle.translatesAutoresizingMaskIntoConstraints = false
+        anotherCircle.heightAnchor.constraint(equalToConstant: 340).isActive = true
+        anotherCircle.widthAnchor.constraint(equalToConstant: 340).isActive = true
+        anotherCircle.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        anotherCircle.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+
+        anotherCircle.layer.cornerRadius = 170
+//        anotherCircle.layer.borderColor = UIColor.black.cgColor
+//        anotherCircle.layer.borderWidth = 2
+//
+//
+        anotherCircle.addSubview(circle)
+        circle.backgroundColor = .red
+
         circle.translatesAutoresizingMaskIntoConstraints = false
-        circle.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        circle.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        circle.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        circle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        
-        circle.layer.cornerRadius = 75
-        
+        circle.heightAnchor.constraint(equalToConstant: 280).isActive = true
+        circle.widthAnchor.constraint(equalToConstant: 280).isActive = true
+        circle.centerXAnchor.constraint(equalTo: anotherCircle.centerXAnchor).isActive = true
+        circle.centerYAnchor.constraint(equalTo: anotherCircle.centerYAnchor).isActive = true
+//        circle.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+
+        circle.layer.cornerRadius = 140
+//
         addTapGesture()
-        addLongPressGesture()
+//        addLongPressGesture()
 //        addPanGesture()
+//        addPinchGesture()
+//        addSwipeGesture()
+        
+//        let tempVC = PinchController()
+//        let gradient = tempVC.view!
+//        view.addSubview(gradient)
+//
+//        gradient.translatesAutoresizingMaskIntoConstraints = false
+//        gradient.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+//        gradient.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+//        gradient.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+//        gradient.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
     }
     
     func addTapGesture() {
@@ -39,15 +90,14 @@ class ViewController: UIViewController {
     }
     
     @objc func handleTapGesture(gesture: UITapGestureRecognizer) {
+        let scale = CGAffineTransform(scaleX: 1.75, y: 1.75)
         if circle.transform == .identity {
-//            let transform = CGAffineTransform(translationX: .zero, y: 400)
-//            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [.curveEaseOut]) {
-//                self.circle.transform = transform
-//            }
-            print("")
-        } else {
-            UIView.animate(withDuration: 0.36) {
-                self.circle.transform = .identity
+            UIView.animate(withDuration: 1, delay: 0, options: [.repeat, .autoreverse]) {
+                self.circle.transform = CGAffineTransform(scaleX: 1.25, y: 1.25)
+            }
+            UIView.animate(withDuration: 1, delay: 0, options: [.repeat]) {
+                self.anotherCircle.transform = scale
+                self.anotherCircle.alpha = 0
             }
         }
     }
@@ -109,6 +159,46 @@ class ViewController: UIViewController {
             print("")
         default:
             print("Pan Gesture")
+        }
+    }
+    
+    func addPinchGesture() {
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinchGesture))
+        anotherCircle.addGestureRecognizer(pinch)
+    }
+    
+    @objc func handlePinchGesture(gesture: UIPinchGestureRecognizer) {
+        
+        let scale = anotherCircle.transform.scaledBy(x: gesture.scale, y: gesture.scale)
+        let minScale: CGFloat = 0.5
+        if scale.a < minScale && scale.d < minScale {
+            return
+        }
+        anotherCircle.transform = scale
+        gesture.scale = 1.0
+    }
+    
+    func addSwipeGesture() {
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture))
+        swipeRight.direction = .right
+        anotherCircle.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleLeftSwipe))
+        swipeLeft.direction = .left
+        anotherCircle.addGestureRecognizer(swipeLeft)
+    }
+    
+    @objc func handleSwipeGesture(gesture: UISwipeGestureRecognizer) {
+        print("Swipe")
+        let transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        UIView.animate(withDuration: 0.36) {
+            self.anotherCircle.transform = transform
+        }
+    }
+    
+    @objc func handleLeftSwipe(gesture: UISwipeGestureRecognizer) {
+        UIView.animate(withDuration: 0.36) {
+            self.anotherCircle.transform = .identity
         }
     }
 
